@@ -1,0 +1,34 @@
+{
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Run.php",
+			"type": "php",
+			"request": "launch",
+			"program": "${workspaceFolder}\\run.php",
+			"cwd": "${workspaceFolder}",
+			"port": 0,
+			"runtimeExecutable": "c:\\Programy\\Serwerowate\\PHP\\php.exe",
+			"runtimeArgs": [
+				"-dxdebug.start_with_request=yes"
+			],
+			"env": {
+				"XDEBUG_MODE": "debug,develop",
+				"XDEBUG_CONFIG": "client_port=${port}"
+			}
+		},
+		/*
+			{
+				"name": "Run PHP file in its current dir",
+				"type": "php",
+				"request": "launch",
+				"program": "${file}",
+				"cwd": "${fileDirname}",
+				"runtimeExecutable": "c:\\Programy\\Serwerowate\\PHP\\php.exe"
+			},
+		*/
+	]
+}
