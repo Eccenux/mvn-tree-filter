@@ -105,4 +105,19 @@ class TreeProcessor {
 		fclose($output);
 		fclose($outSkip);
 	}
+
+	/** Main process. */
+	public function appendFilter($outputFile) {
+		// Open output file for writing
+		$output = fopen($outputFile, "a+") or die("Unable to open output file!");
+		fwrite($output, "<script>\n");
+		fwrite($output, file_get_contents('./assets/ReArray.js'));
+		fwrite($output, "\n</script>\n");
+		fwrite($output, "<script>\n");
+		fwrite($output, file_get_contents('./assets/ViewFilter.js'));
+		fwrite($output, "\n</script>\n");
+		fwrite($output, "<script>\n");
+		fwrite($output, file_get_contents('./assets/filter_init.js'));
+		fwrite($output, "\n</script>\n");
+	}
 }

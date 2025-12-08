@@ -33,7 +33,8 @@ foreach ($trees as $fileName) {
 	$outPath = $config['_out'] . $fileName . ".html";
 
 	// Process tree
-	$result = $processor->processTree($treePath, $outPath);
+	$processor->processTree($treePath, $outPath);
+	$processor->appendFilter($outPath);
 
 	echo "\nOutput written to $outPath";
 }
