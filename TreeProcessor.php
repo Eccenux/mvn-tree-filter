@@ -1,4 +1,10 @@
 <?php
+
+class State {
+	public const Start = 'START';
+	public const InList = 'IN-LIST';
+}
+
 /**
  * Maven text-tree processing.
  */
@@ -19,7 +25,7 @@ class TreeProcessor {
 		$outSkip = fopen($outputFile.".skipped", "w") or die("Unable to open output file!");
 
 		$prevDepth = 0;
-		fwrite($output, "<ul>\n");
+		$state = State::Start;
 
 		// Read the file line by line
 		while (!feof($input)) {
@@ -32,15 +38,50 @@ class TreeProcessor {
 			}
 
 			// Cleanup line
-			$clean = preg_replace('/^\[INFO\]\s*/', '', trim($line));
+			$clean = rtrim(preg_replace('/^\[INFO\] ?/', '', trim($line)));
 			if ($clean === '') continue;
 
-			// Count depth
-			preg_match_all('/(\|  )/', $clean, $matches);
-			$depth = count($matches[0]);
+			// State
+			if ($state == State::Start && preg_match('/---+ ?dependency:/', $clean) === 1) {
+				$state = State::InList;
+				continue;
+			}
+			if (preg_match('/--------<(.+)>------/', $clean, $matches) === 1) {
+				$header = trim($matches[1]);
+				echo "$header\n";
+				if ($state == State::InList) {
+					fwrite($output, str_repeat("</ul>\n", $prevDepth + 1));
+					$prevDepth = 0;
+				}
+				fwrite($output, "<h2>".htmlspecialchars($header)."</h2>\n");
+				fwrite($output, "<ul>\n");
+				$state = State::Start;
+				continue;
+			}
+			if ($state == State::InList && preg_match('/^-------------------------------+$/', $clean) === 1) {
+				$state = State::Start;
+				fwrite($output, "</ul>\n");
+			}
+			if ($state != State::InList) {
+				fwrite($outSkip, $line);
+				continue;
+			}
 
 			// Remove tree chars
-			$name = preg_replace('/^(\|  )*(\+|-|\\\\)-\s*/', '', $clean);
+			$name = preg_replace('/^(\|  +)*(\+|-|\\\\)-\s*/', '', ltrim($clean));
+			/*
+				Depth.
+
+				(should probably do tests...)
+				"+- abc" is 0 
+				"\- abc" is 0
+				"   +- abc" is 1
+				"   \- abc" is 1
+				"+- org" is 0
+				"|  +- org" is 1
+				"|  |  +- org" is 2
+			 */
+			$depth = round((strlen($clean) - strlen($name)) / 3);
 
 			// Open/close based on depth
 			if ($depth > $prevDepth) {
@@ -54,20 +95,14 @@ class TreeProcessor {
 		}
 
 		// finalize
+		// if ($state == State::InList) {
+		// 	fwrite($output, "</ul>\n");
+		// }
 		fwrite($output, str_repeat("</ul>\n", $prevDepth + 1));
 
 		// Close files
 		fclose($input);
 		fclose($output);
 		fclose($outSkip);
-	}
-
-	/** Transform and save. */
-	private static function parseLine($outputFile, $line) {
-	}
-
-	/** Transform and save. */
-	private static function saveLine($outputFile, $line) {
-		fwrite($outputFile, $line);
 	}
 }
