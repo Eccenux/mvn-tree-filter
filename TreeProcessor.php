@@ -106,18 +106,37 @@ class TreeProcessor {
 		fclose($outSkip);
 	}
 
-	/** Main process. */
+	/** Prepare assets (this can be done once at any time). */
+	public function prepareAssets($outDirBase) {
+		$outDir = $outDirBase .'/assets';
+		if (!is_dir($outDir)) {
+			mkdir($outDir, 0777, true);
+		}
+
+		$assets = [
+			'ReArray.js',
+			'ViewFilter.js',
+			'filter_init.js',
+		];
+
+		foreach ($assets as $asset) {
+			if (!copy('./assets/'.$asset, $outDir . '/' . $asset)) {
+				echo "Failed to copy $asset\n";
+			}
+		}
+	}
+	/** Append assets (needs to be done for each file). */
 	public function appendFilter($outputFile) {
-		// Open output file for writing
+		$assets = [
+			'ReArray.js',
+			'ViewFilter.js',
+			'filter_init.js',
+		];
+
 		$output = fopen($outputFile, "a+") or die("Unable to open output file!");
-		fwrite($output, "<script>\n");
-		fwrite($output, file_get_contents('./assets/ReArray.js'));
-		fwrite($output, "\n</script>\n");
-		fwrite($output, "<script>\n");
-		fwrite($output, file_get_contents('./assets/ViewFilter.js'));
-		fwrite($output, "\n</script>\n");
-		fwrite($output, "<script>\n");
-		fwrite($output, file_get_contents('./assets/filter_init.js'));
-		fwrite($output, "\n</script>\n");
+		foreach ($assets as $asset) {
+			fwrite($output, "<script src='./assets/$asset'></script>\n");
+		}
+		fclose($output);
 	}
 }

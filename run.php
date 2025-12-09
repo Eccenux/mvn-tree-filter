@@ -25,8 +25,8 @@ $config['_out'] ??= '../out';
 //
 // Transform to HTML
 //
-@mkdir($config['_out'], 0777, true);
 $processor = new TreeProcessor();
+$processor->prepareAssets($config['_out']);
 foreach ($trees as $fileName) {
 	// Files
 	$treePath = $config['_base'] . $fileName;
