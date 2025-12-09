@@ -85,12 +85,12 @@ class TreeProcessor {
 
 			// Open/close based on depth
 			if ($depth > $prevDepth) {
-				fwrite($output, "<ul>\n");
+				fwrite($output, str_repeat("\t", $depth) . "<ul>\n");
 			} elseif ($depth < $prevDepth) {
-				fwrite($output, str_repeat("</ul>\n", $prevDepth - $depth));
+				fwrite($output, str_repeat("\t", $depth+1) . str_repeat("</ul>", $prevDepth - $depth) . "\n");
 			}
 
-			fwrite($output, "<li>" . htmlspecialchars($name) . "</li>\n");
+			fwrite($output, str_repeat("\t", $depth+1) . "<li>" . htmlspecialchars($name) . "\n");
 			$prevDepth = $depth;
 		}
 
@@ -98,7 +98,7 @@ class TreeProcessor {
 		// if ($state == State::InList) {
 		// 	fwrite($output, "</ul>\n");
 		// }
-		fwrite($output, str_repeat("</ul>\n", $prevDepth + 1));
+		fwrite($output, str_repeat("</ul>\n", $prevDepth));
 
 		// Close files
 		fclose($input);
