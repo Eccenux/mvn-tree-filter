@@ -1,0 +1,10 @@
+#filter-controls-container {
+  position: fixed;
+  padding: 1em;
+  background: wheat;
+  top: 0;
+}
+
+h2:first-of-type {
+  padding-top: 2em;
+}

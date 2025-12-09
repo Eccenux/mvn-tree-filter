@@ -106,6 +106,14 @@ class TreeProcessor {
 		fclose($outSkip);
 	}
 
+	/** Assets to copy. */
+	public static $assets = [
+		'filters.css',
+		'ReArray.js',
+		'ViewFilter.js',
+		'filter_init.js',
+	];
+
 	/** Prepare assets (this can be done once at any time). */
 	public function prepareAssets($outDirBase) {
 		$outDir = $outDirBase .'/assets';
@@ -113,11 +121,7 @@ class TreeProcessor {
 			mkdir($outDir, 0777, true);
 		}
 
-		$assets = [
-			'ReArray.js',
-			'ViewFilter.js',
-			'filter_init.js',
-		];
+		$assets = self::$assets;
 
 		foreach ($assets as $asset) {
 			if (!copy('./assets/'.$asset, $outDir . '/' . $asset)) {
@@ -127,15 +131,15 @@ class TreeProcessor {
 	}
 	/** Append assets (needs to be done for each file). */
 	public function appendFilter($outputFile) {
-		$assets = [
-			'ReArray.js',
-			'ViewFilter.js',
-			'filter_init.js',
-		];
+		$assets = self::$assets;
 
 		$output = fopen($outputFile, "a+") or die("Unable to open output file!");
 		foreach ($assets as $asset) {
-			fwrite($output, "<script src='./assets/$asset'></script>\n");
+			if (preg_match('/[.]js$/', $asset) === 1) {
+				fwrite($output, "<script src='./assets/$asset'></script>\n");
+			} else {
+				fwrite($output, "<link rel='stylesheet' type='text/css' href='./assets/$asset'>\n");
+			}
 		}
 		fclose($output);
 	}
