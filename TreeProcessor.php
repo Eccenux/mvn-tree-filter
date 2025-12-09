@@ -48,7 +48,7 @@ class TreeProcessor {
 			}
 			if (preg_match('/--------<(.+)>------/', $clean, $matches) === 1) {
 				$header = trim($matches[1]);
-				echo "$header\n";
+				// echo "$header\n";
 				if ($state == State::InList) {
 					fwrite($output, str_repeat("</ul>\n", $prevDepth + 1));
 					$prevDepth = 0;
