@@ -6,6 +6,14 @@ class State {
 }
 
 /**
+ * Print error message to STDERR and exit with code 1.
+ */
+function dieError(string $txt): void {
+	fwrite(STDERR, "$txt\n");
+	exit(1);
+}
+
+/**
  * Maven text-tree processing.
  */
 class TreeProcessor {
@@ -18,11 +26,11 @@ class TreeProcessor {
 	/** Main process. */
 	public function processTree($inputFile, $outputFile) {
 		// Open input file for reading
-		$input = fopen($inputFile, "r") or die("Unable to open tree file!");
+		$input = fopen($inputFile, "r") or dieError("[ERROR] Unable to open tree file!");
 
 		// Open output file for writing
-		$output = fopen($outputFile, "w") or die("Unable to open output file!");
-		$outSkip = fopen($outputFile.".skipped", "w") or die("Unable to open output file!");
+		$output = fopen($outputFile, "w") or dieError("[ERROR] Unable to open output file!");
+		$outSkip = fopen($outputFile.".skipped", "w") or dieError("[ERROR] Unable to open output file!");
 
 		$prevDepth = 0;
 		$state = State::Start;
@@ -133,7 +141,7 @@ class TreeProcessor {
 	public function appendFilter($outputFile) {
 		$assets = self::$assets;
 
-		$output = fopen($outputFile, "a+") or die("Unable to open output file!");
+		$output = fopen($outputFile, "a+") or dieError("[ERROR] Unable to open output file!");
 		foreach ($assets as $asset) {
 			if (preg_match('/[.]js$/', $asset) === 1) {
 				fwrite($output, "<script src='./assets/$asset'></script>\n");
