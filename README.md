@@ -4,8 +4,10 @@ This PHP class processes a Maven text-tree and outputs an HTML with a dynamic fi
 
 ## Quick start
 
+### Multiple files
 You can use `run.php` for processing multiple files.
 Just create `.data.php` that returns an array. Example:
+
 ```php
 <?php
 return array(
@@ -13,6 +15,24 @@ return array(
 	"../dep-tree--2025-12-07T12.34.56 -- minor.tex",
 );
 ```
+
+### Single file
+
+You can also process a single file from CLI:
+```bash
+php run-single.php -in input.tex -out output.html
+```
+
+Optional directory parameter:
+```bash
+php run-single.php -dir ../data -in input.tex -out output.html
+```
+
+Parameters:
+
+* `-in` – input file name (build tree)
+* `-out` – output file name (html)
+* `-dir` – base directory for input/output (default `./`)
 
 ## Dev Usage
 
