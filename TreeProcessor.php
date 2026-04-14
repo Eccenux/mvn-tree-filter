@@ -34,6 +34,21 @@ class TreeProcessor {
 
 		$prevDepth = 0;
 		$state = State::Start;
+		
+		// Init file
+		$title = preg_replace('/.+([0-9]{4}-[0-9]{2}-[0-9]{2}[T _\-0-9.]+[0-9]).+/', '$1 – Maven dependency tree', basename($outputFile));
+		$title = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
+		fwrite($output, <<<HTMLstr
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{$title}</title>
+</head>
+<body>
+HTMLstr
+);
 
 		// Read the file line by line
 		while (!feof($input)) {
