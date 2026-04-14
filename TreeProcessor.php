@@ -24,13 +24,15 @@ class TreeProcessor {
 	}
 
 	/** Main process. */
-	public function processTree($inputFile, $outputFile) {
+	public function processTree($inputFile, $outputFile, $skippedPath = '') {
 		// Open input file for reading
 		$input = fopen($inputFile, "r") or dieError("[ERROR] Unable to open tree file!");
 
 		// Open output file for writing
 		$output = fopen($outputFile, "w") or dieError("[ERROR] Unable to open output file!");
-		$outSkip = fopen($outputFile.".skipped", "w") or dieError("[ERROR] Unable to open output file!");
+		if (!empty($skippedPath)) {
+			$outSkip = fopen($skippedPath, "w") or dieError("[ERROR] Unable to open output file!");
+		}
 
 		$prevDepth = 0;
 		$state = State::Start;

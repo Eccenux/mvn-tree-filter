@@ -27,13 +27,18 @@ $config['_out'] ??= '../out';
 //
 $processor = new TreeProcessor();
 $processor->prepareAssets($config['_out']);
+$skippedDir = $config['_out'] . '_skipped/';
+if (!is_dir($skippedDir)) {
+	mkdir($skippedDir, 0777, true); // recursive
+}
 foreach ($trees as $fileName) {
 	// Files
 	$treePath = $config['_base'] . $fileName;
 	$outPath = $config['_out'] . $fileName . ".html";
+	$skippedPath = $skippedDir . $fileName . ".skipped";
 
 	// Process tree
-	$processor->processTree($treePath, $outPath);
+	$processor->processTree($treePath, $outPath, $skippedPath);
 	$processor->appendFilter($outPath);
 
 	echo "\nOutput written to $outPath";
